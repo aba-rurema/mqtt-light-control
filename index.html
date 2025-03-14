@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Light Control</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        button { font-size: 18px; padding: 10px 20px; margin: 10px; cursor: pointer; }
+        .on { background-color: green; color: white; }
+        .off { background-color: red; color: white; }
+    </style>
+</head>
+<body>
+    <h1>MQTT Light Control</h1>
+    <button id="onBtn" class="on">Turn ON</button>
+    <button id="offBtn" class="off">Turn OFF</button>
+    <p>Status: <span id="status">Waiting...</span></p>
+    <script>
+        const broker = "wss://test.mosquitto.org:8081"; // Public MQTT broker over WebSockets
+        const topic = "/student_group/light_control";
+        const client = mqtt.connect(broker);
+        client.on("connect", () => {
+            console.log("Connected to MQTT Broker");
+        });
+        function sendCommand(command) {
+            client.publish(topic, command);
+            document.getElementById("status").textContent = `Sent: ${command}`;
+        }
+        document.getElementById("onBtn").addEventListener("click", () => sendCommand("ON"));
+        document.getElementById("offBtn").addEventListener("click", () => sendCommand("OFF"));
+    </script>
+</body>
+</html>
